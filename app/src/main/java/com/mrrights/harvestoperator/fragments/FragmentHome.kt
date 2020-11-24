@@ -60,13 +60,14 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 	private var locationManager : LocationManager? = null
 	
 	private lateinit var fusedLocationProviderClient : FusedLocationProviderClient
-//Broadcast Reciever
-	val broadCastReceiver = object : BroadcastReceiver() {
+
+	//Broadcast Reciever
+	  val broadCastReceiver = object : BroadcastReceiver() {
 		override fun onReceive(contxt: Context?, intent: Intent?) {
 			CardViewBookingReqWindow.visibility= View.VISIBLE
 			val user: String? = intent?.getStringExtra("User")
 			tvUser.text = user
-			val loc: String? = intent?.getStringExtra("Loc")
+			val loc: String? = intent?.getStringExtra("Address")
 			tvLoc.text = loc
 			val type: String? = intent?.getStringExtra("Type")
 			tvType.text = type
@@ -82,6 +83,7 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View?
 	{
+
 		// Inflate the layout for this fragment
 		return inflater.inflate(R.layout.fragment_home, container, false)
 		
@@ -92,7 +94,7 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 		//Broadcast Receiver
 		LocalBroadcastManager.getInstance(requireContext())
 				.registerReceiver(broadCastReceiver, IntentFilter("receiver"))
-		//Broadcast Reciever
+		//Broadcast Receiver
 	}
 	override fun onDestroy() {
 		super.onDestroy()
@@ -103,6 +105,25 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?)
 	{
 		super.onViewCreated(view, savedInstanceState)
+
+		val bundle: Bundle? = activity?.intent?.extras
+		if (bundle!=null) {
+			CardViewBookingReqWindow.visibility = View.VISIBLE
+
+			val User = bundle?.get("customerName")
+			val Address = bundle?.get("Address")
+			val Type = bundle?.get("serviceType")
+			val Date = bundle?.get("serviceDate")
+			val Time = bundle?.get("DeliveryTime")
+			val Area = bundle?.get("RequiredArea")
+			tvUser.text = User.toString()
+			tvLoc.text = Address.toString()
+			tvType.text = "Service : "+Type.toString()
+			tvDate.text =  "Date : "+Date.toString()
+			tvTime.text =  "Time : "+Time.toString()
+			tvArea.text =  "Area : "+Area.toString()
+		}
+
 
 		//Broadcast Receiver
 		LocalBroadcastManager.getInstance(requireContext())
@@ -137,15 +158,15 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 
 		//Button Accept
 		buttonAccept.setOnClickListener(View.OnClickListener {
-			Toast.makeText(requireContext(),"Booking Accepted",Toast.LENGTH_SHORT).show()
-			CardViewBookingReqWindow.visibility= View.INVISIBLE
-			cardViewServiceStatus.visibility=View.INVISIBLE
+			Toast.makeText(requireContext(), "Booking Accepted", Toast.LENGTH_SHORT).show()
+			CardViewBookingReqWindow.visibility = View.INVISIBLE
+			cardViewServiceStatus.visibility = View.INVISIBLE
 		})
 		//Button Reject
 		buttonReject.setOnClickListener(View.OnClickListener {
-			Toast.makeText(requireContext(),"Booking Rejected",Toast.LENGTH_SHORT).show()
-			CardViewBookingReqWindow.visibility= View.INVISIBLE
-			cardViewServiceStatus.visibility=View.VISIBLE
+			Toast.makeText(requireContext(), "Booking Rejected", Toast.LENGTH_SHORT).show()
+			CardViewBookingReqWindow.visibility = View.INVISIBLE
+			cardViewServiceStatus.visibility = View.VISIBLE
 		})
 		//Check for LocationPermissions & GPS is turned On
 		fabLocation.setOnClickListener {

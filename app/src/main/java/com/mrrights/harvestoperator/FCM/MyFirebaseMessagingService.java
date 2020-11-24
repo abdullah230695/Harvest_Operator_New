@@ -45,38 +45,34 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
-        }
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            String data=  remoteMessage.getNotification().getBody();
-           String details[] = (data.split("\n"));
-           String username,location,serviceType,date,time,area;
-            username=details[0];
-            location=details[1];
-            serviceType=details[2];
-            date=details[3];
-            time=details[4];
-            area=details[5];
+            String username,address,serviceType,date,time,area;
+            username=remoteMessage.getData().get("customerName");
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData().get("customerName"));
+            address=remoteMessage.getData().get("Address");
+            serviceType=remoteMessage.getData().get("serviceType");
+            date=remoteMessage.getData().get("serviceDate");
+            time=remoteMessage.getData().get("DeliveryTime");
+            area=remoteMessage.getData().get("RequiredArea");
 
             Intent i=new Intent("receiver");
             i.putExtra("User",username);
-            i.putExtra("Loc",location);
+            i.putExtra("Address",address);
             i.putExtra("Type","Service :"+serviceType);
             i.putExtra("Date","Date :"+date);
             i.putExtra("Time","Time :"+time);
             i.putExtra("Area","Area :"+area);
 
-               LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        }
+        sendNotification(String.valueOf(remoteMessage.getData()));
 
-            //Log.d(TAG, "");
-
-            //Toast.makeText(getApplicationContext(),"Data is "+details[0],Toast.LENGTH_SHORT).show();
+        // Check if message contains a notification payload.
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+        /*    String data=  remoteMessage.getNotification().getBody();
+           String details[] = (data.split("\n"));*/
 
         }
-        sendNotification(remoteMessage.getNotification().getBody());
     }
     private void sendNotification(String messageBody) {
 
@@ -88,12 +84,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new  NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(messageBody)
-                .setContentText(messageBody)
+                .setContentTitle("New Booking Received")
+                .setContentText("Tap to see the details")
                 .setSound(defaultSoundUri).setAutoCancel(true).setContentIntent(pendingIntent);;
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, "Default channel", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(channelId, "Default channel", NotificationManager.IMPORTANCE_HIGH);
             manager.createNotificationChannel(channel);
         }
         manager.notify(0, builder.build());

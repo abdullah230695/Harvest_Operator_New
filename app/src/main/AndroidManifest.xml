@@ -41,6 +41,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+
         <activity
             android:name=".activities.ActivitySplash"
             android:configChanges="screenSize|orientation|uiMode">
@@ -56,9 +57,14 @@
         <activity
             android:name=".activities.ActivitySignIn"
             android:configChanges="screenSize|orientation|uiMode" />
+
         <activity
             android:name=".activities.ActivityMain"
-            android:configChanges="screenSize|orientation|uiMode" />
+            android:configChanges="screenSize|orientation|uiMode">
+        <intent-filter>
+            <action android:name=".fragments.FragmentHome" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter></activity>
 
         <service
             android:name=".FCM.MyFirebaseMessagingService"
