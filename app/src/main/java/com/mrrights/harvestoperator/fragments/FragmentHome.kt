@@ -130,17 +130,15 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 				.registerReceiver(broadCastReceiver, IntentFilter("receiver"))
 		//Broadcast Reciever
 
+		//Subscribing to the topic to receive the booking details
 		Firebase.messaging.subscribeToTopic("Booking").addOnCompleteListener { task ->
 
 			if (task.isSuccessful) {
 				Log.d(FCMTAG, "Subscribe to topic 'Booking'")
-
 			} else {
-
 				Log.d(FCMTAG, "Not able to subscribe the topic")
 			}
-
-		}
+		} //Subscribing to the topic to receive the booking details
 
 		// Initialize Places.
 		Places.initialize(requireContext(), resources.getString(R.string.google_maps_key))
@@ -237,6 +235,17 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 	@RequiresApi(Build.VERSION_CODES.Q)
 	override fun onMapReady(map: GoogleMap?)
 	{
+		// To calculate distance b/w two LatLng's
+		/*var startLat: Double
+		var startLon: Double
+		var endLat: Double
+		var endLon: Double
+		startLat = 13.067439
+		startLon = 80.237617
+		endLat = 19.076090
+		endLon = 72.877426*/
+		// To calculate distance b/w two LatLng's
+
 		map?.let {
 			googleMap = it
 		}
@@ -248,6 +257,13 @@ public class FragmentHome : Fragment(), OnMapReadyCallback
 		
 		updateLocationUI()
 		locateDevice()
+		// To calculate distance b/w two LatLng's
+		/*val results = FloatArray(1)
+		Location.distanceBetween(startLat, startLon, endLat, endLon, results)
+		val distance = results[0]
+		val km = (distance / 1000).toInt()
+		Toast.makeText(requireContext(), "KM is$km", Toast.LENGTH_SHORT).show()*/
+		// To calculate distance b/w two LatLng's
 	}
 	
 	//check the GPS is turned On or Not
